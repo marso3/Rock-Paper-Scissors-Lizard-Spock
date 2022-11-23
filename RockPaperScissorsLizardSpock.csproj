@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\lizardIcon.png" />
+    <None Remove="Images\paperIcon.png" />
+    <None Remove="Images\rockIcon.png" />
+    <None Remove="Images\scissorsIcon.png" />
+    <None Remove="Images\spockIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C1.WPF.ColorPicker" Version="6.0.20222.302" />
+    <PackageReference Include="RandomNameGeneratorLibrary" Version="1.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\lizardIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\paperIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\rockIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\scissorsIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\spockIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>

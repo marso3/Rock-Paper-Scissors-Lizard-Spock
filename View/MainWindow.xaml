@@ -1,0 +1,336 @@
+﻿<Window x:Class="RockPaperScissorsLizardSpock.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:RockPaperScissorsLizardSpock.View"
+        xmlns:vm="clr-namespace:RockPaperScissorsLizardSpock.ViewModel"
+        xmlns:mdl="clr-namespace:RockPaperScissorsLizardSpock.Model"
+        xmlns:inf="clr-namespace:RockPaperScissorsLizardSpock.Model.Infrastructure"
+        xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+        mc:Ignorable="d"
+
+        Title="Rock paper scissors lizard spock" Height="700" Width="800" FontSize="30" WindowState="Maximized">
+    <Window.DataContext>
+        <vm:RPScLSViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <inf:StateToConfigurationVisibilityConverter x:Key="keyConfigurationVisibility"/>
+        <inf:StateToPlayingVisibilityConverter x:Key="keyPlayingVisibility"/>
+        <inf:StateToShowingHandsVisibilityConverter x:Key="keyShowingHandsVisibility"/>
+        <inf:StateToPlayingORShowingHandsVisibilityConverter x:Key="keyPlayingORShowingHandsVisibility"/>
+        <inf:StateToFinalVisibilityConverter x:Key="keyFinalVisibility"/>
+        <inf:BooleanToVisibilityConverter x:Key="keyBoolVisibility"/>
+
+        <inf:StateToSinglePlayerVisibilityConverter x:Key="keySinglePlayerVisibility"/>
+        <inf:StateToMutiPlayerVisibilityConverter x:Key="keyMultiPlayerVisibility"/>
+        
+        <inf:OptionToImageConverter x:Key="keyOptionToImage"/>
+
+        <ObjectDataProvider x:Key="keyEnumOptionsLeft" ObjectType="{x:Type sys:Enum}" MethodName="GetNames">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="mdl:Option"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="keyEnumOptionsRight" ObjectType="{x:Type sys:Enum}" MethodName="GetNames">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="mdl:Option"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <Style x:Key="keySmallTextStyle">
+            <Setter Property="Control.FontSize" Value="20"/>
+            <Setter Property="Control.FontWeight" Value="Thin"/>
+        </Style>
+        <Style x:Key="keyMidTextStyle">
+            <Setter Property="Control.FontSize" Value="25"/>
+            <Setter Property="Control.FontWeight" Value="Normal"/>
+        </Style>
+        <Style x:Key="keyBigTextStyle">
+            <Setter Property="Control.FontSize" Value="30"/>
+            <Setter Property="Control.FontWeight" Value="Bold"/>
+        </Style>
+    </Window.Resources>
+    <Window.InputBindings>
+        <!-- Left player gestures -->
+        <KeyBinding Key="D1" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="LeftRock"/>
+        <KeyBinding Key="D2" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="LeftPaper"/>
+        <KeyBinding Key="D3" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="LeftScissors"/>
+        <KeyBinding Key="D4" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="LeftLizard"/>
+        <KeyBinding Key="D5" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="LeftSpock"/>
+
+        <!-- Right player gestures -->
+        <KeyBinding Key="NumPad1" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="RightRock"/>
+        <KeyBinding Key="NumPad2" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="RightPaper"/>
+        <KeyBinding Key="NumPad3" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="RightScissors"/>
+        <KeyBinding Key="NumPad4" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="RightLizard"/>
+        <KeyBinding Key="NumPad5" Command="{Binding MultiplayerSelectOptionCommand}" CommandParameter="RightSpock"/>
+    </Window.InputBindings>
+    <DockPanel Background="Linen">
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="10"
+                   Text="{Binding Message}" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" 
+                    Visibility="{Binding Game.State, Converter={StaticResource keyConfigurationVisibility}}">
+            <Button Content="Single player mode" Margin="0,0,10,0" Command="{Binding SinglePlayerCommand}"/>
+            <Button Content="Multi player mode" Margin="10,0,0,0" Command="{Binding MultiPlayerCommand}"/>
+        </StackPanel>
+        <Grid DockPanel.Dock="Bottom">
+            <!-- MultiPlayer -->
+            <Grid Visibility="{Binding Game.Mode, Converter={StaticResource keyMultiPlayerVisibility}}">
+                <!-- Configuration -->
+                <Grid Visibility="{Binding Game.State, Converter={StaticResource keyConfigurationVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Left Player -->
+                    <StackPanel Grid.Column="0" Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PLeft.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.PLeft.CompleteName}" 
+                                   Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="Name"/>
+                        <TextBox Text="{Binding Game.PLeft.Name}" 
+                                 Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="Surname"/>
+                        <TextBox Text="{Binding Game.PLeft.Surname}" 
+                                 Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <c1:C1ColorPicker SelectedColor="{Binding Game.PLeft.ColorChosen}"
+                                           Width="200" Height="40" Margin="12"/>
+                    </StackPanel>
+                    
+                    <!-- Right Player -->
+                    <StackPanel Grid.Column="1" Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PRight.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.PRight.CompleteName}" 
+                                   Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="Name"/>
+                        <TextBox Text="{Binding Game.PRight.Name}" 
+                                 Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="Surname"/>
+                        <TextBox Text="{Binding Game.PRight.Surname}" 
+                                 Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <c1:C1ColorPicker SelectedColor="{Binding Game.PRight.ColorChosen}"
+                                           Width="200" Height="40" Margin="12"/>
+                    </StackPanel>
+
+                    <!-- Bottom panel -->
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="Number of rounds"/>
+                            <Slider Value="{Binding Game.NRounds}" Minimum="1" Maximum="15" SelectionStart="3"
+                                    IsSnapToTickEnabled="True" TickFrequency="2"
+                                    Margin="20" MinWidth="200" VerticalAlignment="Center"/>
+                            <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Game.NRounds}"/>
+                        </StackPanel>
+                        <Button Content="Play!" Command="{Binding StartCommand}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Playing -->
+                <Grid Visibility="{Binding Game.State, Converter={StaticResource keyPlayingORShowingHandsVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Left Player -->
+                    <StackPanel Grid.Column="0" Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PLeft.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.PLeft.CompleteName}" TextAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PLeft.NVictories, StringFormat='Number of victories: {0}'}" 
+                                   TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+
+                        <TextBlock Text="1. Rock" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="2. Paper" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="3. Scissors" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="4. Lizard" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="5. Spock" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PLeft.IsReady, StringFormat='Is ready: {0}'}" TextAlignment="Center"/>
+                        <Image Source="{Binding Game.PLeft.OptionChosen, Converter={StaticResource keyOptionToImage}}" 
+                               Stretch="Uniform" MaxHeight="250" Margin="20"
+                               Visibility="{Binding Game.State, Converter={StaticResource keyShowingHandsVisibility}}"/>
+                    </StackPanel>
+
+                    <!-- Center panel -->
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Game.RoundNow, StringFormat='Round: {0}'}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PWinner.CompleteName, StringFormat='Winner:&#x0a;{0}'}" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                                   Style="{StaticResource ResourceKey=keyBigTextStyle}" Visibility="{Binding ShowHandsVisibiity}"/>
+                    </StackPanel>
+
+
+                    <!-- Right Player -->
+                    <StackPanel Grid.Column="2" Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PRight.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.PRight.CompleteName}" TextAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PRight.NVictories, StringFormat='Number of victories: {0}'}" 
+                                   TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+
+                        <TextBlock Text="1. Rock" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="2. Paper" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="3. Scissors" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="4. Lizard" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="5. Spock" TextAlignment="Center" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PRight.IsReady, StringFormat='Is ready: {0}'}" TextAlignment="Center"/>
+                        <Image Source="{Binding Game.PRight.OptionChosen, Converter={StaticResource keyOptionToImage}}"  
+                               Stretch="Uniform" MaxHeight="250" Margin="20"
+                               Visibility="{Binding Game.State, Converter={StaticResource keyShowingHandsVisibility}}"/>
+                    </StackPanel>
+
+                    <!-- Bottom panel -->
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="3">
+                        <Button Margin="8" Content="Show hands!" Command="{Binding PlayCommand}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Final -->
+                <StackPanel VerticalAlignment="Center" Width="600" Background="Aquamarine"
+                            Visibility="{Binding Game.State, Converter={StaticResource keyFinalVisibility}}">
+                    <TextBlock Margin="10" Text="{Binding Game.PWinner.CompleteName, StringFormat='Winner: {0}'}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                    <TextBlock Margin="10" Text="{Binding Game.RoundNow, StringFormat='Round: {0}'}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                    <Button Margin="10" Content="Rematch with same settings" Command="{Binding RematchCommand}"/>
+                    <Button Margin="10" Content="Go to main screen" Command="{Binding GoToMainMenuCommand}"/>
+                </StackPanel>
+            </Grid>
+            
+            <!-- SinglePlayer -->
+            <Grid Visibility="{Binding Game.Mode, Converter={StaticResource keySinglePlayerVisibility}}">
+                <!-- Configuration -->
+                <Grid Visibility="{Binding Game.State, Converter={StaticResource keyConfigurationVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Player panel -->
+                    <StackPanel Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PLeft.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.PLeft.CompleteName}" HorizontalAlignment="Center" 
+                                   Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="Name"/>
+                        <TextBox Text="{Binding Game.PLeft.Name}" 
+                                 Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="Surname"/>
+                        <TextBox Text="{Binding Game.PLeft.Surname}" 
+                                 Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <c1:C1ColorPicker SelectedColor="{Binding Game.PLeft.ColorChosen}"
+                                           Width="200" Height="40" Margin="12"/>
+                    </StackPanel>
+
+                    <!-- Bottom panel -->
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="Number of rounds"/>
+                            <Slider Value="{Binding Game.NRounds}" Minimum="1" Maximum="15" SelectionStart="3"
+                                    IsSnapToTickEnabled="True" TickFrequency="2"
+                                    Margin="20" MinWidth="200" VerticalAlignment="Center"/>
+                            <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Game.NRounds}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="12">
+                            <CheckBox VerticalContentAlignment="Center" IsChecked="{Binding Game.IsStreakMode}">
+                                <CheckBox.LayoutTransform>
+                                    <ScaleTransform ScaleX="2" ScaleY="2"/>
+                                </CheckBox.LayoutTransform>
+                            </CheckBox>
+                            <TextBlock Text="Streak mode"/>
+                        </StackPanel>
+                        <Button Content="Play!" Command="{Binding StartCommand}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Playing -->
+                <Grid Visibility="{Binding Game.State, Converter={StaticResource keyPlayingORShowingHandsVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Left Player -->
+                    <StackPanel Grid.Column="0" Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PLeft.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.Streak, StringFormat='Streak: {0}'}" 
+                                   Visibility="{Binding Game.IsStreakMode, Converter={StaticResource keyBoolVisibility}}"
+                                   Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PLeft.CompleteName}" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PLeft.NVictories, StringFormat='Number of victories: {0}'}" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PLeft.OptionChosen, StringFormat='Option chosen: {0}'}" Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <ComboBox ItemsSource="{Binding Source={StaticResource keyEnumOptionsLeft}}"
+                                  IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding Game.PLeft.OptionChosen}"/>
+                        <Image Source="{Binding Game.PLeft.OptionChosen, Converter={StaticResource keyOptionToImage}}" Stretch="Uniform" MaxHeight="350" Margin="20"/>
+                    </StackPanel>
+
+                    <!-- Center panel -->
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Game.RoundNow, StringFormat='Round: {0}'}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PWinner.CompleteName, StringFormat='Winner:&#x0a;{0}'}" 
+                                   Visibility="{Binding ShowHandsVisibiity}" TextAlignment="Center"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                    </StackPanel>
+
+                    <!-- CPU Player -->
+                    <StackPanel Grid.Column="2" Margin="24">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding Game.PRight.ColorChosen}"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Game.PRight.CompleteName}" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PRight.NVictories, StringFormat='Number of victories: {0}'}" 
+                                   Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <TextBlock Text="{Binding Game.PRight.OptionChosen, StringFormat='Option chosen: {0}'}" Visibility="{Binding ShowHandsVisibiity}" 
+                                   Style="{StaticResource ResourceKey=keyMidTextStyle}"/>
+                        <ComboBox Visibility="Hidden"/>
+                        <Image Source="{Binding Game.PRight.OptionChosen, Converter={StaticResource keyOptionToImage}}" Visibility="{Binding ShowHandsVisibiity}"
+                               Stretch="Uniform" MaxHeight="350" Margin="20"/>
+                    </StackPanel>
+                    
+                    <!-- Bottom panel -->
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="3">
+                        <Button Margin="8" Content="Show hands!" Command="{Binding PlayCommand}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Final -->
+                <StackPanel VerticalAlignment="Center" Width="600" Background="Aquamarine"
+                            Visibility="{Binding Game.State, Converter={StaticResource keyFinalVisibility}}">
+                    <TextBlock Margin="10" Text="{Binding Game.PWinner.CompleteName, StringFormat='Winner: {0}'}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                    <TextBlock Margin="10" Text="{Binding Game.RoundNow, StringFormat='Round: {0}'}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ResourceKey=keyBigTextStyle}"/>
+                    <Button Margin="10" Content="Rematch with same settings" Command="{Binding RematchCommand}"/>
+                    <Button Margin="10" Content="Go to main screen" Command="{Binding GoToMainMenuCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
